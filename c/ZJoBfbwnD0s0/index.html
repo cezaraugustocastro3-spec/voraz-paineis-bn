@@ -1,135 +1,200 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#303030">
 <title>Black November · Sodré</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Mesmo sistema da Galeria VORAZ: grafite, Bebas Neue + Inter Tight, código branco em mono, post no estilo Instagram. */
-:root{--bg:#303030;--surface:#3a3a3a;--line:#525252;--fg:#f2f2f2;--muted:#b8b8b8;--a:#C40602;--ig:#000;--igl:#262626;--display:"Bebas Neue",Impact,sans-serif;--body:"Inter Tight",system-ui,-apple-system,sans-serif;--r:6px;color-scheme:dark}
+/* Galeria VORAZ: grafite, Bebas Neue + Inter Tight; cada peça é um post de Instagram com carrossel de arrastar. */
+:root{--bg:#303030;--surface:#3a3a3a;--line:#525252;--fg:#f2f2f2;--muted:#b8b8b8;--a:#C40602;--ig:#000;--igl:#262626;--igm:#a8a8a8;--display:"Bebas Neue",Impact,sans-serif;--body:"Inter Tight",system-ui,-apple-system,sans-serif;--r:6px;color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--body);-webkit-tap-highlight-color:transparent}
 header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
-header .w,main{max-width:520px;margin:0 auto}
+header .w,main{max-width:470px;margin:0 auto}
 header small{font:400 18px/1 var(--display);letter-spacing:.06em;color:var(--muted)}
 header small i{font-style:normal;color:var(--a)}
 header h1{margin:4px 0 2px;font:400 34px/1 var(--display);letter-spacing:.04em}
 header p{margin:0;color:var(--muted);font-size:13px}
-main{padding:16px 12px calc(40px + env(safe-area-inset-bottom))}
+main{padding:16px 10px calc(40px + env(safe-area-inset-bottom))}
 h2{display:flex;gap:10px;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:22px 4px 12px}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
-.card{background:var(--ig);border:1px solid var(--igl);border-radius:var(--r);margin-bottom:24px;overflow:hidden}
-.top{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.post{background:var(--ig);border:1px solid var(--igl);border-radius:var(--r);margin-bottom:26px;overflow:hidden;color:#f5f5f5}
+.ph{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .av{width:34px;height:34px;border-radius:50%;flex:none;padding:2px;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)}
 .av b{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--a);border:2px solid #000;font:400 13px/1 var(--display);color:#fff}
-.top .t{flex:1;font-size:13px;line-height:1.25}
-.top .t b{display:block;font-weight:700}
-.top .t span{color:#a8a8a8;font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ph .t{flex:1;font-size:13px;line-height:1.25}.ph .t b{display:block}.ph .t span{color:var(--igm);font-size:12px}
 .cod{background:#fff;color:#0d0d0d;border:0;font:800 15px/1 ui-monospace,Consolas,monospace;letter-spacing:.04em;padding:7px 9px;border-radius:4px;cursor:pointer;flex:none}
-.car{position:relative;background:#000}
-.trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.trilho::-webkit-scrollbar{display:none}
-.trilho img{flex:0 0 100%;width:100%;scroll-snap-align:center;display:block;aspect-ratio:var(--r2);object-fit:cover;background:#111}
-.cont{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.72);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;font-variant-numeric:tabular-nums}
-.seta{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.85);color:#000;font-size:18px;cursor:pointer;display:none}
-.seta.e{left:8px}.seta.d{right:8px}
-@media(hover:hover){.car:hover .seta{display:block}}
-.pts{display:flex;justify-content:center;gap:4px;padding:10px 0 0}
-.pts i{width:6px;height:6px;border-radius:50%;background:#555}.pts i.on{background:#0095f6}
-.acoes{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
-button.b{font:600 14px var(--body);min-height:44px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;padding:8px}
+.vp{position:relative;overflow:hidden;background:#000;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;aspect-ratio:var(--ar)}
+.vp.drag{cursor:grabbing}
+.fita{display:flex;height:100%;will-change:transform}
+.fita.anim{transition:transform .32s cubic-bezier(.25,.8,.25,1)}
+.fita img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none}
+.cont{position:absolute;top:12px;right:12px;background:rgba(18,18,18,.75);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:4px 9px;font-variant-numeric:tabular-nums}
+.seta{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:0;background:rgba(255,255,255,.8);color:#000;font:700 16px/28px var(--body);cursor:pointer;padding:0;opacity:0;transition:opacity .2s}
+.seta.e{left:10px}.seta.d{right:10px}.seta[hidden]{display:none}
+@media(hover:hover){.vp:hover .seta{opacity:1}}
+.bar{display:flex;align-items:center;padding:8px 10px 4px;gap:14px;position:relative;min-height:40px}
+.bar svg{width:25px;height:25px;fill:none;stroke:#f5f5f5;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bar .salvar{margin-left:auto;display:flex}
+.pts{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:4px}
+.pts i{width:6px;height:6px;border-radius:50%;background:#555;transition:background .2s}.pts i.on{background:#0095f6}
+.capt{padding:2px 12px 12px;font-size:14px;line-height:1.4}
+.capt b{margin-right:5px}.capt .mais{color:var(--igm);background:none;border:0;padding:0;font:inherit;cursor:pointer}
+.capt .txt{white-space:pre-line}
+.capt .txt.curta{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--igl)}
+button.b{font:600 14px var(--body);min-height:46px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;padding:8px}
 button.b.p{background:var(--a);border-color:var(--a);color:#fff}
+button.b[aria-busy=true]{opacity:.6}
 .leg{padding:0 12px 14px}
-.leg textarea{width:100%;min-height:150px;font:16px/1.45 var(--body);border:1px solid var(--igl);border-radius:var(--r);padding:10px;color:#f5f5f5;background:#121212;resize:vertical}
-.leg .l{display:flex;gap:8px;margin-top:8px}.leg .l button{flex:1}
-.leg .l .rst{flex:0 0 auto;padding:8px 14px}
-.semleg{color:#a8a8a8;font-size:13px;padding:0 12px 14px;margin:0}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:#0d0d0d;padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.leg summary{cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;padding:6px 0}
+.leg textarea{width:100%;min-height:170px;font:16px/1.45 var(--body);border:1px solid var(--igl);border-radius:var(--r);padding:10px;color:#f5f5f5;background:#121212;resize:vertical;margin-top:6px}
+.leg .l{display:flex;gap:8px;margin-top:8px}.leg .l button{flex:1}.leg .l .rst{flex:0 0 auto;padding:8px 14px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:#0d0d0d;padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9;white-space:nowrap}
 .toast.on{opacity:1}
 .exp{max-width:420px;margin:80px auto;padding:24px;text-align:center}
 :focus-visible{outline:2px solid var(--a);outline-offset:2px}
-</style>
-</head><body>
+@media(prefers-reduced-motion:reduce){.fita.anim{transition:none}}
+</style></head><body>
 <header><div class="w"><small>MKR Imóveis · <i>Black November</i></small><h1>Sodré · CRECI 71.896-F</h1><p id="val"></p></div></header>
 <main id="app"></main>
 <div class="toast" id="toast"></div>
 <script>
 {
-const D = {"grupos": [{"titulo": "", "itens": [{"codigo": "CA0124", "titulo": "Casa de 4 quartos com 955 m² de terreno na Itoupava Norte.", "sub": "R$ 899.000", "legenda": "🏡 Casa com 955 m² de terreno na Itoupava Norte, em Blumenau.\n\n🛏️ 4 quartos, sendo 2 suítes · 4 banheiros · 358 m² em 3 pisos\n🏊 Terreno com preparação para instalar piscina\n🔥 Área de festas coberta com churrasqueira, fogão a lenha e lavabo\n💻 Sótão espaçoso, bom para home office\n🌳 Área de preservação aos fundos: o verde sempre por perto\n🚗 Garagem coberta para até 3 carros\n💰 R$ 899.000 · aceita financiamento · estuda permuta de menor valor\n🔑 Exclusividade MKR Imóveis\n\n📲 WhatsApp: (47) 99767-4644\n📩 Ou chame no direct e peça o código CA0124.\n👤 Sodré · CRECI 71.896-F\n\n#blacknovember #blumenau #casaavenda #imoveissc #mkrimoveis", "paginas": ["img/MKR_CA0124_BlackNovember_01.jpg", "img/MKR_CA0124_BlackNovember_02.jpg", "img/MKR_CA0124_BlackNovember_03.jpg", "img/MKR_CA0124_BlackNovember_04.jpg", "img/MKR_CA0124_BlackNovember_05.jpg", "img/MKR_CA0124_BlackNovember_06.jpg", "img/MKR_CA0124_BlackNovember_07.jpg", "img/MKR_CA0124_BlackNovember_08.jpg", "img/MKR_CA0124_BlackNovember_09.jpg", "img/MKR_CA0124_BlackNovember_10.jpg"], "tipo": "feed"}]}], "ratio": "4/5"};
+const D = {"grupos": [{"titulo": "", "itens": [{"codigo": "CA0124", "titulo": "Casa de 4 quartos com 955 m² de terreno na Itoupava Norte.", "sub": "R$ 899.000", "legenda": "🏡 Casa com 955 m² de terreno na Itoupava Norte, em Blumenau.\n\n🛏️ 4 quartos, sendo 2 suítes · 4 banheiros · 358 m² em 3 pisos\n🏊 Terreno com preparação para instalar piscina\n🔥 Área de festas coberta com churrasqueira, fogão a lenha e lavabo\n💻 Sótão espaçoso, bom para home office\n🌳 Área de preservação aos fundos: o verde sempre por perto\n🚗 Garagem coberta para até 3 carros\n💰 R$ 899.000 · aceita financiamento · estuda permuta de menor valor\n🔑 Exclusividade MKR Imóveis\n\n📲 WhatsApp: (47) 99767-4644\n📩 Ou chame no direct e peça o código CA0124.\n👤 Sodré · CRECI 71.896-F\n\n#blacknovember #blumenau #casaavenda #imoveissc #mkrimoveis", "paginas": ["img/MKR_CA0124_BlackNovember_01.jpg", "img/MKR_CA0124_BlackNovember_02.jpg", "img/MKR_CA0124_BlackNovember_03.jpg", "img/MKR_CA0124_BlackNovember_04.jpg", "img/MKR_CA0124_BlackNovember_05.jpg", "img/MKR_CA0124_BlackNovember_06.jpg", "img/MKR_CA0124_BlackNovember_07.jpg", "img/MKR_CA0124_BlackNovember_08.jpg", "img/MKR_CA0124_BlackNovember_09.jpg", "img/MKR_CA0124_BlackNovember_10.jpg"], "tipo": "feed"}]}], "ratio": "4/5"}, HANDLE = "mkrimoveis", INI = "MKR";
 const ATE = new Date("2026-11-20T23:59:59-03:00");
 const app = document.getElementById("app"), toast = document.getElementById("toast");
 const fmt = ATE.toLocaleDateString("pt-BR");
-function aviso(t){toast.textContent=t;toast.classList.add("on");clearTimeout(aviso.t);aviso.t=setTimeout(()=>toast.classList.remove("on"),1800)}
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const MOVEL = IOS || /Android/i.test(navigator.userAgent);
+function aviso(t, ms){toast.textContent=t;toast.classList.add("on");clearTimeout(aviso.t);aviso.t=setTimeout(()=>toast.classList.remove("on"),ms||1900)}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ic = {
+  cor:'<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.3 4.5 6.9 4.5c2 0 3.4 1.1 5.1 3 1.7-1.9 3.1-3 5.1-3 3.6 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg>',
+  com:'<svg viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 1 1-4-7.2L21 3.5l-1.2 4.4A8.5 8.5 0 0 1 20.5 12z"/></svg>',
+  env:'<svg viewBox="0 0 24 24"><path d="M22 3 9.5 13.5M22 3l-7 18-3.5-7.5L3 10z"/></svg>',
+  sal:'<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5z"/></svg>'
+};
 if (Date.now() > ATE.getTime()) {
   app.innerHTML = '<div class="exp"><h2>Este link expirou</h2><p>O painel ficou disponível até ' + fmt + '. Peça um novo link à equipe de marketing.</p></div>';
 } else {
-  document.getElementById("val").textContent = "Disponível até " + fmt + " · toque e segure a imagem ou use os botões";
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  let html = "";
-  D.grupos.forEach((g, gi) => {
+  document.getElementById("val").textContent = "Disponível até " + fmt + " · arraste para o lado para ver as páginas";
+  const itens = D.grupos.flatMap(g => g.itens);
+  let html = "", idx = 0;
+  D.grupos.forEach(g => {
     if (g.titulo) html += "<h2>" + esc(g.titulo) + "</h2>";
-    g.itens.forEach((it, ii) => {
-      const id = gi + "-" + ii, n = it.paginas.length;
-      html += '<section class="card" data-id="' + id + '" style="--r2:' + (it.tipo === "story" ? "9/16" : (D.ratio || "4/5")) + '">' +
-        '<div class="top"><span class="av"><b>MKR</b></span><div class="t"><b>mkrimoveis</b><span>' + esc(it.titulo || "") + ' · ' + esc(it.sub || "") + '</span></div><button class="cod" data-c="' + esc(it.codigo) + '" title="Copiar código">' + esc(it.codigo) + '</button></div>' +
-        '<div class="car"><div class="trilho">' + it.paginas.map((p, k) => '<img src="' + p + '" alt="' + esc(it.codigo) + ' página ' + (k + 1) + '" loading="' + (k < 1 ? "eager" : "lazy") + '" decoding="async">').join("") + '</div>' +
-        (n > 1 ? '<span class="cont">1/' + n + '</span><button class="seta e" aria-label="Anterior">‹</button><button class="seta d" aria-label="Próxima">›</button>' : '') + '</div>' +
-        (n > 1 ? '<div class="pts">' + it.paginas.map((_, k) => '<i' + (k ? '' : ' class="on"') + '></i>').join("") + '</div>' : '') +
-        '<div class="acoes"><button class="b um">Salvar esta</button><button class="b p todas">' + (n > 1 ? 'Salvar todas (' + n + ')' : 'Compartilhar') + '</button></div>' +
-        (it.legenda ? '<div class="leg"><textarea aria-label="Legenda ' + esc(it.codigo) + '"></textarea><div class="l"><button class="b p cp">Copiar legenda</button><button class="b rst">Original</button></div></div>' : '<p class="semleg">Story sem legenda.</p>') +
-        '</section>';
+    g.itens.forEach(it => {
+      const n = it.paginas.length, ar = it.tipo === "story" ? "9/16" : (D.ratio || "4/5");
+      html += '<article class="post" data-i="' + (idx++) + '">' +
+        '<div class="ph"><span class="av"><b>' + INI + '</b></span><div class="t"><b>' + HANDLE + '</b><span>' + esc(it.titulo || "") + (it.sub ? ' · ' + esc(it.sub) : '') + '</span></div><button class="cod" title="Copiar código">' + esc(it.codigo) + '</button></div>' +
+        '<div class="vp" style="--ar:' + ar + '"><div class="fita">' + it.paginas.map((p, k) => '<img src="' + p + '" alt="' + esc(it.codigo) + ' – ' + (k + 1) + ' de ' + n + '" draggable="false"' + (k > 1 ? ' loading="lazy"' : '') + '>').join("") + '</div>' +
+        (n > 1 ? '<span class="cont">1/' + n + '</span><button class="seta e" hidden aria-label="Anterior">‹</button><button class="seta d" aria-label="Próxima">›</button>' : '') + '</div>' +
+        '<div class="bar">' + ic.cor + ic.com + ic.env + (n > 1 ? '<div class="pts">' + it.paginas.map((_, k) => '<i' + (k ? '' : ' class="on"') + '></i>').join("") + '</div>' : '') + '<span class="salvar">' + ic.sal + '</span></div>' +
+        (it.legenda ? '<div class="capt"><b>' + HANDLE + '</b><span class="txt curta"></span> <button class="mais">mais</button></div>' : '<div class="capt" style="color:var(--igm)">Story · sem legenda</div>') +
+        '<div class="acoes"><button class="b um">' + (n > 1 ? 'Baixar esta página' : 'Baixar') + '</button><button class="b p todas">' + (n > 1 ? 'Baixar todas (' + n + ')' : 'Enviar / Salvar') + '</button></div>' +
+        (it.legenda ? '<details class="leg" open><summary>Legenda (pode editar)</summary><textarea aria-label="Legenda ' + esc(it.codigo) + '"></textarea><div class="l"><button class="b p cp">Copiar legenda</button><button class="b rst">Original</button></div></details>' : '') +
+        '</article>';
     });
   });
   app.innerHTML = html;
-  const itens = D.grupos.flatMap(g => g.itens);
-  const arquivos = {};
-  async function carregar(id, it) {
-    if (!arquivos[id]) arquivos[id] = Promise.all(it.paginas.map(async p => {
-      const r = await fetch(p); const b = await r.blob();
-      return new File([b], p.split("/").pop(), {type: "image/jpeg"});
-    })).catch(e => { delete arquivos[id]; throw e; });
-    return arquivos[id];
+
+  const cache = {};
+  function carregar(i) {
+    const it = itens[i];
+    if (!cache[i]) { const c = cache[i] = {pronto: null};
+      c.p = Promise.all(it.paginas.map(async p => {
+        const r = await fetch(p, {cache: "force-cache"}); if (!r.ok) throw new Error(r.status);
+        return new File([await r.blob()], p.split("/").pop(), {type: "image/jpeg"});
+      })).then(f => (c.pronto = f)).catch(e => { delete cache[i]; throw e; }); }
+    return cache[i];
   }
-  function baixar(files) {
+  function baixarArquivos(files) {
     files.forEach((f, k) => setTimeout(() => {
       const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name;
-      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-    }, k * 350));
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    }, k * 400));
+    aviso(files.length > 1 ? "Baixando " + files.length + " imagens" : "Baixando imagem");
   }
-  async function enviar(files, it) {
-    if (navigator.canShare && navigator.canShare({files})) {
-      try { await navigator.share({files, title: it.codigo}); } catch (e) { if (e.name !== "AbortError") baixar(files); }
-    } else { baixar(files); aviso(files.length > 1 ? "Baixando " + files.length + " imagens" : "Baixando imagem"); }
+  async function entregar(files) {
+    if (MOVEL && navigator.canShare && navigator.canShare({files})) {
+      try { await navigator.share({files}); }
+      catch (e) { if (e.name === "NotAllowedError") aviso("Toque de novo para salvar"); else if (e.name !== "AbortError") baixarArquivos(files); }
+    } else baixarArquivos(files);
   }
-  const obs = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { const id = e.target.dataset.id; carregar(id, itens[[...document.querySelectorAll(".card")].indexOf(e.target)]).catch(() => {}); obs.unobserve(e.target); }
-  }), {rootMargin: "400px"});
-  document.querySelectorAll(".card").forEach((c, idx) => {
-    const it = itens[idx], id = c.dataset.id, tr = c.querySelector(".trilho"), n = it.paginas.length;
-    obs.observe(c);
-    const atual = () => Math.round(tr.scrollLeft / tr.clientWidth);
-    if (n > 1) {
-      const cont = c.querySelector(".cont"), pts = c.querySelectorAll(".pts i");
-      tr.addEventListener("scroll", () => { const k = atual(); cont.textContent = (k + 1) + "/" + n; pts.forEach((p, j) => p.classList.toggle("on", j === k)); }, {passive: true});
-      c.querySelector(".e").onclick = () => tr.scrollBy({left: -tr.clientWidth, behavior: "smooth"});
-      c.querySelector(".d").onclick = () => tr.scrollBy({left: tr.clientWidth, behavior: "smooth"});
+  function acao(i, btn, qual) {
+    const c = carregar(i);
+    if (c.pronto) return entregar(qual(c.pronto));
+    btn.setAttribute("aria-busy", "true"); aviso("Preparando as imagens…", 4000);
+    c.p.then(f => { btn.removeAttribute("aria-busy");
+      if (IOS) aviso("Pronto. Toque de novo para salvar em Fotos", 2800); else entregar(qual(f));
+    }).catch(() => { btn.removeAttribute("aria-busy"); aviso("Sem conexão. Tente de novo."); });
+  }
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { carregar(+e.target.dataset.i).p.catch(() => {}); obs.unobserve(e.target); } }), {rootMargin: "600px"});
+
+  document.querySelectorAll(".post").forEach(post => {
+    const i = +post.dataset.i, it = itens[i], n = it.paginas.length;
+    obs.observe(post);
+    const vp = post.querySelector(".vp"), fita = post.querySelector(".fita");
+    let k = 0;
+    const cont = post.querySelector(".cont"), pts = post.querySelectorAll(".pts i"), se = post.querySelector(".seta.e"), sd = post.querySelector(".seta.d");
+    function ir(novo, anim) {
+      k = Math.max(0, Math.min(n - 1, novo));
+      fita.classList.toggle("anim", anim !== false);
+      fita.style.transform = "translate3d(" + (-k * 100) + "%,0,0)";
+      if (cont) cont.textContent = (k + 1) + "/" + n;
+      pts.forEach((p, j) => p.classList.toggle("on", j === k));
+      if (se) { se.hidden = k === 0; sd.hidden = k === n - 1; }
     }
-    c.querySelector(".cod").onclick = () => copiar(it.codigo, "Código " + it.codigo + " copiado");
-    c.querySelector(".um").onclick = async () => { try { const f = await carregar(id, it); enviar([f[atual()]], it); } catch (e) { aviso("Sem conexão. Tente de novo."); } };
-    c.querySelector(".todas").onclick = async () => { try { enviar(await carregar(id, it), it); } catch (e) { aviso("Sem conexão. Tente de novo."); } };
-    const ta = c.querySelector("textarea");
+    if (n > 1) {
+      se.onclick = e => { e.stopPropagation(); ir(k - 1); };
+      sd.onclick = e => { e.stopPropagation(); ir(k + 1); };
+      let x0 = 0, y0 = 0, dx = 0, t0 = 0, ativo = false, eixo = null;
+      vp.addEventListener("pointerdown", e => {
+        if (e.target.closest(".seta")) return;
+        ativo = true; eixo = null; x0 = e.clientX; y0 = e.clientY; dx = 0; t0 = performance.now();
+        fita.classList.remove("anim");
+      });
+      vp.addEventListener("pointermove", e => {
+        if (!ativo) return;
+        const mx = e.clientX - x0, my = e.clientY - y0;
+        if (!eixo) { if (Math.abs(mx) < 6 && Math.abs(my) < 6) return; eixo = Math.abs(mx) > Math.abs(my) ? "x" : "y";
+          if (eixo === "x") { try { vp.setPointerCapture(e.pointerId); } catch (_) {} vp.classList.add("drag"); } }
+        if (eixo !== "x") return;
+        dx = mx; const w = vp.clientWidth;
+        let d = dx; if ((k === 0 && d > 0) || (k === n - 1 && d < 0)) d = d / 3;
+        fita.style.transform = "translate3d(" + (-k * w + d) + "px,0,0)";
+      });
+      const fim = () => {
+        if (!ativo) return; ativo = false; vp.classList.remove("drag");
+        if (eixo !== "x") return;
+        const w = vp.clientWidth, v = Math.abs(dx) / Math.max(1, performance.now() - t0);
+        if (Math.abs(dx) > w * 0.2 || (v > 0.4 && Math.abs(dx) > 20)) ir(k + (dx < 0 ? 1 : -1)); else ir(k);
+      };
+      vp.addEventListener("pointerup", fim); vp.addEventListener("pointercancel", fim);
+      vp.tabIndex = 0;
+      vp.addEventListener("keydown", e => { if (e.key === "ArrowRight") ir(k + 1); if (e.key === "ArrowLeft") ir(k - 1); });
+      window.addEventListener("resize", () => ir(k, false));
+    }
+    post.querySelector(".cod").onclick = () => copiar(it.codigo, "Código " + it.codigo + " copiado");
+    const bU = post.querySelector(".um"), bT = post.querySelector(".todas");
+    bU.onclick = () => acao(i, bU, f => [f[k]]);
+    bT.onclick = () => acao(i, bT, f => f);
+    const ta = post.querySelector("textarea");
     if (ta) {
-      const k = "leg:" + location.pathname + ":" + it.codigo;
-      let salvo = null; try { salvo = localStorage.getItem(k); } catch (e) {}
+      const chave = "leg:" + location.pathname + ":" + it.codigo, txt = post.querySelector(".capt .txt"), mais = post.querySelector(".mais");
+      let salvo = null; try { salvo = localStorage.getItem(chave); } catch (e) {}
       ta.value = salvo || it.legenda;
-      ta.addEventListener("input", () => { try { localStorage.setItem(k, ta.value); } catch (e) {} });
-      c.querySelector(".cp").onclick = () => copiar(ta.value, "Legenda copiada");
-      c.querySelector(".rst").onclick = () => { ta.value = it.legenda; try { localStorage.removeItem(k); } catch (e) {} aviso("Legenda original"); };
+      const sync = () => { txt.textContent = ta.value; };
+      sync();
+      ta.addEventListener("input", () => { sync(); try { localStorage.setItem(chave, ta.value); } catch (e) {} });
+      mais.onclick = () => { const c = txt.classList.toggle("curta"); mais.textContent = c ? "mais" : "menos"; };
+      post.querySelector(".cp").onclick = () => copiar(ta.value, "Legenda copiada");
+      post.querySelector(".rst").onclick = () => { ta.value = it.legenda; sync(); try { localStorage.removeItem(chave); } catch (e) {} aviso("Legenda original"); };
     }
   });
   async function copiar(t, msg) {
     try { await navigator.clipboard.writeText(t); aviso(msg); }
-    catch (e) { const x = document.createElement("textarea"); x.value = t; x.setAttribute("readonly", ""); x.style.position = "fixed"; x.style.opacity = "0"; document.body.appendChild(x); x.select(); x.setSelectionRange(0, t.length); try { document.execCommand("copy"); aviso(msg); } catch (_) { aviso("Não deu para copiar"); } x.remove(); }
+    catch (e) { const x = document.createElement("textarea"); x.value = t; x.setAttribute("readonly", ""); x.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(x); x.select(); x.setSelectionRange(0, t.length); try { document.execCommand("copy"); aviso(msg); } catch (_) { aviso("Não deu para copiar"); } x.remove(); }
   }
 }
 }
